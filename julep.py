@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import getpass
 import json
 import logging
 import sys
@@ -17,9 +18,10 @@ def main () :
 		'error': logging.ERROR,
 		'critical': logging.CRITICAL
 	}
-	
+
 
 	parser = argparse.ArgumentParser(description = 'HP Operation Orchestration testing tool')
+	parser.add_argument('--askpass', action='store_true', help='Ignore password from config file and prompt for it.')
 	parser.add_argument('--configfile', default = 'julep.yaml', help='Configfile with hpoo flow testcases')
 	parser.add_argument('--loglevel', default = 'INFO', help='FATAL, ERROR, WARNING, INFO, DEBUG')
 	parser.add_argument('--logfile', default = 'julep.log', help='Logfile to store messages (Default: julep.log)')
@@ -42,18 +44,22 @@ def main () :
 
 	root = logging.getLogger()
 
-	if args.quiet is False: 
+	if args.quiet is False:
 		console = logging.StreamHandler()
 		console.setLevel(args.loglevel)
-		
+
 		formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 		console.setFormatter(formatter)
-		
+
 		root.addHandler(console)
 
 	logging.info("Want some blacksea julep?")
 	config = parse_config(args.configfile, args.configfmt)
 	config['general']['trustcert'] = args.trustcert
+
+        if args.askpass is True:
+            config['general']['password'] = getpass.getpass()
+
 
 	testcases = {
 		'running' : [],
@@ -72,14 +78,14 @@ def main () :
 
 	timeout = int(args.timeout)
 	heartbeat = int(args.heartbeat)
-    
+
 	while timeout >= heartbeat :
 		logging.info('Tracking testcases in running state')
 		for test in testcases['running'] :
-			
+
 			if test.get_status() == 'RUNNING' :
 				continue
-			else :	
+			else :
 				testcases['finished'].append(test)
 				testcases['running'].remove(test)
 
@@ -92,9 +98,9 @@ def main () :
 		logging.info('Waiting %s seconds for next heartbeat', str(heartbeat))
 		timeout = timeout - heartbeat
 		time.sleep(heartbeat)
-	
+
 	testresults = []
-	logging.info("Generating junit xml output")	
+	logging.info("Generating junit xml output")
 
 	for test in testcases['finished'] :
 		result = test.collect()
@@ -106,8 +112,8 @@ def main () :
 
 		for k,v in flow['assert'].items() :
 			 if all(item in result[k].items() for item in flow['assert'][k].items()) is False:
-				errors.append("Failed to assert "+k)		
-		
+				errors.append("Failed to assert "+k)
+
 		if errors :
 			tc = TestCase(testname,flow['uuid'],'',errors)
 			tc.add_failure_info(errors)
@@ -119,12 +125,12 @@ def main () :
 			tc = TestCase(testname,flow['uuid'],duration/1000.0,result['executionSummary']['resultStatusType'],'')
 			testresults.append(tc)
 
-	
+
 	ts = TestSuite('ootests', testresults)
 	with open(args.junitoutput, 'w') as f:
 		TestSuite.to_file(f, [ts], prettyprint=True)
 		logging.info("Writing output to "+args.junitoutput)
-	
+
 
 def parse_config(configfile, fmt) :
 	f = open(configfile,'r')

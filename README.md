@@ -5,7 +5,7 @@ Julep is a simple testing framework for HP Operation Orchestration. It produces 
 
 # Usage
 ```
-usage: julep.py [-h] [--configfile CONFIGFILE] [--loglevel LOGLEVEL]
+usage: julep.py [-h] [--askpass] [--configfile CONFIGFILE] [--loglevel LOGLEVEL]
                 [--logfile LOGFILE] [--timeout TIMEOUT]
                 [--heartbeat HEARTBEAT] [--quiet] [--trustcert]
                 [--configfmt CONFIGFMT] [--delay DELAY]
@@ -15,6 +15,7 @@ HP Operation Orchestration testing tool
 
 optional arguments:
   -h, --help            show this help message and exit
+  --askpass             Ignore password from config file and prompt for it.
   --configfile CONFIGFILE
                         Configfile with hpoo flow testcases
   --loglevel LOGLEVEL   FATAL, ERROR, WARNING, INFO, DEBUG
@@ -34,6 +35,7 @@ optional arguments:
 
 ```
 
+- askpass - By default, Julep uses password provided in config file. If you don't want to save password in plain text, Julep could ask for password.
 - quiet - By default Julep prints detailed logs in both logfile and console. The quiet option will suppress stdout messages.
 - junitoutput - the location of the junit xml file that contains the test cases results
 - delay - that option is used to not flood hpoo with numerous api calls. It introduces  delay betwen the api calls. Defaults to 15 seconds.
