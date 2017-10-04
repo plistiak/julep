@@ -4,7 +4,7 @@ import sys
 import requests
 import requests.packages.urllib3
 import time
-from base64 import encodestring
+from base64 import encodebytes
 
 
 class hpoo():
@@ -15,7 +15,10 @@ class hpoo():
 
         self.session = requests.Session()
         self.session.url = self.config['url']
-        self.auth = encodestring(self.config['username'] + ":" + self.config['password'])
+        #self.auth = encodestring(self.config['username'] + ":" + self.config['password'])
+        s = self.config['username'] + ":" + self.config['password']
+        self.auth = encodebytes(s.encode('utf-8')).decode('utf-8')
+
         self.session.headers.update({'Authorization': 'Basic ' + self.auth.rstrip()})
         self.session.headers.update({'Accept': 'application/json'})
 
