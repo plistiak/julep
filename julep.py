@@ -111,9 +111,14 @@ def main():
         logging.info("Asserts for " + flow['name'])
         errors = []
 
-        for k, v in flow['assert'].items():
-            if all(item in result[k].items() for item in flow['assert'][k].items()) is False:
-                errors.append("Failed to assert " + k)
+        for assertType in flow['assert']:
+            for key in flow['assert'][assertType]:
+                if key not in result[assertType]:
+                    errors.append("Failed to assert " + assertType + ", " + key + " doesn't exists in results.")
+                    continue
+
+                if flow['assert'][assertType][key] not in result[assertType][key]:
+                    errors.append("Failed to assert " + assertType + ", " + key + " doesn't match")
 
         if errors:
             tc = TestCase(testname, flow['uuid'], '', errors)
