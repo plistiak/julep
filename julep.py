@@ -6,6 +6,7 @@ import sys
 import argparse
 import yaml
 import time
+import re
 import hpoo as oo
 from junit_xml import TestSuite, TestCase
 
@@ -117,7 +118,7 @@ def main():
                     errors.append("Failed to assert " + assertType + ", " + key + " doesn't exists in results.")
                     continue
 
-                if flow['assert'][assertType][key] not in result[assertType][key]:
+                if not re.search(flow['assert'][assertType][key], result[assertType][key]):
                     errors.append("Failed to assert " + assertType + ", " + key + " doesn't match")
 
         if errors:

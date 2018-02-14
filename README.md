@@ -75,7 +75,7 @@ The configfile can be either in json or yaml format. It includes 2 objects. Gene
         req: "asdf"
       assert: 
         flowOutput: 
-          var1: "var1"
+          var1: "[a-z]+"
           var2: "var2"
         executionSummary: 
           resultStatusType: "RESOLVED"
@@ -115,7 +115,7 @@ The configfile can be either in json or yaml format. It includes 2 objects. Gene
 - uuid  - The UUID of the flow that we want to test
 - name  - A meaningful name for our test (e.g "Deploy chef client via ssh")
 - inputs - The inputs with which we want to run the flow. Take into consideration, that all mandatory inputs will have to be supplied.
-- assert - Assert contains an object that has the same keys and values as the output returned by the execution log. Julep will assert the result with your expected vaulues and fail the test if they do not match. So far the most used ones are flowOutput, that contains the returned by the flow results and the resultStatusType from the executionSummary object, that contains RESOLVED or ERROR depending whether the flow failed or succeeded.
+- assert - Assert contains an object that has the same keys and values as the output returned by the execution log. Julep will assert the result with your expected values and fail the test if they do not match. Assert value is used as regular expression. So far the most used ones are flowOutput, that contains the returned by the flow results and the resultStatusType from the executionSummary object, that contains RESOLVED or ERROR depending whether the flow failed or succeeded.
 
 ### Example JUnit output
 ```xml
