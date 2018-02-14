@@ -24,7 +24,6 @@ class hpoo():
 
         self.error = None
         self.run_id = None
-        self.status = None
         self.flow_result = None
 
         if self.config['trustcert'] is True:
@@ -120,9 +119,6 @@ class hpoo():
 
     def get_error(self):
         return self.error
-
-    def get_status(self):
-        return self.status
 
     def get_flow_result(self):
         return self.flow_result
