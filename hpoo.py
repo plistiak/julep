@@ -96,7 +96,7 @@ class hpoo():
         logging.debug(r.text)
         response = json.loads(r.text)
 
-        return response[0]['resultStatusType']
+        return response[0]['status']
 
     def collect(self):
 
